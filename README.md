@@ -66,6 +66,8 @@ We could use XGBoost, which is a powerful boosting algorithm for handling non-li
 
 # Midterm Report and Presentation
 
+Youtube Link / Presentation: https://youtu.be/xDtrSEpDA7s
+
 ## 1. Preliminary visualizations of data
   - To visualize and get a better grasp on the relationships between the features in our data, we firstly created many bar charts for comparison. We looked at accidents occuring on Weekends vs. Weekdays, Day vs. Night, Holidays vs. Non-Holidays, weather condition occurence counts, Rush Hour vs. Non-Rush Hour, Speed limit range occurence counts, Speed Limit and Weather conditions occurence counts, Ambient Light condition counts, type of Road Surface counts, type of Road Junction counts, type of Traffic Control device counts, Weather/Rush Hour interaction, and Weather/Night interaction.
   - Secondly, we created a Correlation Heatmap showing the correlations between the Numeric Features. Some of the coorelations were obvious: CRASH_HOUR and IS_NIGHT had a high negative inverse relationship, due to a confounding factor (CRASH_HOUR would be low due to it being night). Another obvious relationship that gives us no information would be the high relationship between IS_WEEKEND and DAY_OF_WEEK (When it is the weekend, day of week would be 0, and vice versa). The most interesting and telling coorelation we found was the moderate relationship (.23) between CRASH_HOUR and IS_RUSH_HOUR. This shows us that during rush hour, when more are on the road, there are more likely to be crashes. This is very intuitive, but it is still important to be able to show this in our data.
@@ -76,7 +78,6 @@ We could use XGBoost, which is a powerful boosting algorithm for handling non-li
 <img width="1393" alt="Screenshot 2024-11-05 at 11 39 27 PM" src="https://github.com/user-attachments/assets/6b148ea5-7b51-4089-b353-76524613e535">
 <img width="1392" alt="Screenshot 2024-11-05 at 11 39 40 PM" src="https://github.com/user-attachments/assets/3f98db15-184b-4fb2-99ae-9e24d2397093">
 <img width="664" alt="Screenshot 2024-11-05 at 11 39 52 PM" src="https://github.com/user-attachments/assets/14d1d4e2-3ae0-4a76-b92f-6a62d4926e0a">
-
 
 
 
@@ -95,4 +96,3 @@ We could use XGBoost, which is a powerful boosting algorithm for handling non-li
 - We averaged the probability predictions from the calibrated models to produce a final probability estimate for each record. A threshold of 0.5 was applied to classify each record as either an accident (1) or non-accident (0), adjusting the sensitivity and specificity of the model as needed.
 - Our models achieved accuracy of accuracy of 88.73%, indicating strong results given that this was a balanced dataset. Our F1 score  is 0.8859, which shows a good balance between precision and recall. This performance suggests that our models are well-calibrated and effective for predicting accident occurrences under the simulated conditions
 
-Youtube Link: https://youtu.be/xDtrSEpDA7s
