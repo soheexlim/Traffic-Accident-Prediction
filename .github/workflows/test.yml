@@ -1,4 +1,4 @@
-name: Test Application
+name: CI - Test Flask App
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
 
 jobs:
   test:
-    name: Run Tests and Lint
+    name: Run Flask App Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -23,14 +23,14 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r model/requirements.txt
 
-      - name: Lint Code (Flake8)
+      - name: Run Linter (Flake8)
         run: |
           pip install flake8
-          flake8 app.py --ignore=E501
+          flake8 model/app.py --ignore=E501
 
-      - name: Run Unit Tests (pytest)
+      - name: Run Tests
         run: |
           pip install pytest
-          pytest tests/ || echo "No tests folder found. Add tests to ensure quality."
+          pytest model/tests/
