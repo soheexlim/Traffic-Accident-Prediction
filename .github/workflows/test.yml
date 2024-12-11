@@ -30,3 +30,4 @@ jobs:
           pip install pytest
           PYTHONPATH=./model pytest model/tests/
           pytest model/tests/
+        working-directory: .
