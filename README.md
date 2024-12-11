@@ -87,13 +87,13 @@ To improve the reliability of probability predictions, isotonic and sigmoid cali
   - Rain and snow were found to increase accident risks compared to clear weather.
 
 ### Sample Visualizations
-#### Bar Chart: Accidents by Rush Hour
+#### Holidays and Rush Hour
 ![Accidents by Rush Hour](https://github.com/user-attachments/assets/70507ae4-2b5e-4b24-b651-a55ce0dddab1)
 
-#### Correlation Heatmap
+#### Ambient Light and Road Surface Condition
 ![Correlation Heatmap](https://github.com/user-attachments/assets/6b148ea5-7b51-4089-b353-76524613e535)
 
-#### Interaction Term: Weather and Rush Hour
+#### Interaction Terms: Weather and Rush Hour, Weather and Time of Day (Day or Night)
 ![Weather and Rush Hour](https://github.com/user-attachments/assets/3f98db15-184b-4fb2-99ae-9e24d2397093)
 
 ---
