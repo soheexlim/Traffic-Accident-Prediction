@@ -110,18 +110,113 @@ A naïve model predicting the majority class (no accidents) achieved a baseline 
 
 ---
 
-## 8. Future Work and Applications
+## 8. Observations and Results
 
-### Next Steps
-1. **Feature Expansion**:
-   - Incorporate additional variables such as traffic volume, road type, or seasonal trends.
-2. **Deployment**:
-   - Build an interactive dashboard for real-time accident prediction and visualization.
-3. **Deeper Analysis**:
-   - Investigate feature importance to identify the most critical predictors of accidents.
+### Key Observations:
+1. **Accidents by Weekend vs. Weekday**:
+   - The majority of accidents occur on weekdays, reflecting higher traffic volumes and activity levels during workdays compared to weekends.
 
-### Practical Applications
-This model can be used by transportation agencies for proactive interventions, such as dynamic speed limits or targeted public safety campaigns. Navigation services could integrate the predictions to alert drivers about high-risk areas or times.
+2. **Accidents During Day vs. Night**:
+   - Daytime accidents significantly outnumber nighttime accidents, likely due to increased vehicular activity during daylight hours. However, nighttime accidents may involve heightened risks due to reduced visibility.
+
+3. **Accidents on Holidays vs. Non-Holidays**:
+   - Non-holiday days see substantially more accidents compared to holidays. This discrepancy might be due to decreased traffic volumes and activities on holidays.
+
+4. **Accidents by Weather Condition**:
+   - Clear weather conditions account for the majority of accidents, primarily because clear weather is the most common condition. Adverse weather conditions like rain and snow, though less frequent, present increased risks for drivers.
+
+5. **Accidents During Rush Hour vs. Non-Rush Hour**:
+   - Non-rush hours slightly surpass rush hours in terms of accident frequency. However, rush hours still account for a significant proportion of accidents due to traffic congestion and peak commuting times.
+
+6. **Accidents by Speed Limit**:
+   - Speed ranges between 30-50 mph have the highest accident frequency, followed by areas with speed limits under 30 mph. High-speed areas (greater than 50 mph) show fewer accidents but may be associated with more severe outcomes.
+
+7. **Accidents by Ambient Light Condition**:
+   - Daylight accounts for the majority of accidents, followed by dark conditions with roadway lighting. This trend underscores the importance of visibility in preventing accidents.
+
+8. **Accidents by Traffic Control Device**:
+   - Most accidents occur at locations with no traffic controls, followed by intersections with traffic control signals and stop signs. These findings suggest areas for potential infrastructure improvement.
+
+9. **Interactions Between Features**:
+   - Clear weather dominates accidents across rush and non-rush hours. Adverse weather conditions such as rain and snow have fewer recorded accidents but pose elevated risks when they occur.
+   - Nighttime accidents, while less frequent than daytime, are significant during adverse weather conditions, indicating the compounded risk of poor visibility and challenging weather.
+
+### Model Performance:
+The **Random Forest model** demonstrated exceptional performance in predicting binary crash outcomes (likely to crash or not likely to crash). Key metrics from the evaluation include:
+
+- **Confusion Matrix**:
+  - **True Negatives**: 15,080
+  - **True Positives**: 15,150
+  - **False Negatives**: 3
+  - **False Positives**: 0
+
+- **Classification Report**:
+  - **Precision**: 1.00 for both crash and non-crash classes
+  - **Recall**: 1.00 for both crash and non-crash classes
+  - **F1-Score**: 1.00 for both classes
+  - **Overall Accuracy**: 100%
+
+While the model shows near-perfect metrics, these results must be interpreted cautiously due to potential biases introduced by synthetic data and the dataset's characteristics.
+
+### Feature Importance:
+The model identified key predictors of crash likelihood:
+- **Time of Day**: Morning, evening, and night hours show varying risk levels.
+- **Weather Conditions**: Adverse conditions like rain and snow impact crash likelihood.
+- **Road Surface Condition**: Dry, wet, or icy surfaces influence risk levels.
+- **Speed Limit**: Medium-speed areas (30-50 mph) are associated with higher accident frequencies.
+
+Despite the model's apparent robustness, its limitations suggest a need for further refinement and validation.
+
+---
+
+## 9. Challenges and Limitations
+
+### Challenges:
+1. **Data Imbalance**:
+   - The dataset exhibited significant imbalance, with certain categories (e.g., clear weather and daylight) dominating, which could bias model predictions.
+
+2. **Missing and Incomplete Data**:
+   - Some columns had to be dropped due to missing or irrelevant data, potentially limiting the scope and accuracy of the analysis.
+
+3. **Simplified Feature Encoding**:
+   - Encoding categorical variables and simplifying weather conditions may have led to the loss of nuanced information, reducing model precision.
+
+4. **Challenges with Mapping APIs**:
+   - It was difficult to find a mapping API that accurately bounded the Greater Boston districts and cities. As a result, we manually curated a dropdown menu for location selection, which, while functional, lacks the interactivity and visual appeal of a map-based interface.
+
+### Limitations:
+1. **Use of Synthetic Data**:
+   - Synthetic data was generated to create non-accident occurrences since the dataset only included crash occurrences. This approach introduced limitations:
+     - **Bias in Synthetic Data**: The synthetic data relied on assumptions and heuristics that might not accurately represent real-world non-accident scenarios.
+     - **Model Overconfidence**: The synthetic data may have led to extreme predicted probabilities, especially if it lacked variability or subtle patterns.
+
+2. **Extremes in Predicted Probabilities**:
+   - Our initial plan to return accident probabilities was abandoned because the results were often extreme (close to 0 or 1), reducing practical interpretability. This limitation arose from the dataset's imbalance and the reliance on synthetic data.
+
+3. **Binary Classification Workaround**:
+   - To address the issues with predicted probabilities, we implemented binary classification (likely to crash or not likely to crash). While this improved interpretability, it sacrificed the detailed insights that probabilities could offer.
+
+4. **Generalizability**:
+   - The model is specific to the Greater Boston area and may not generalize well to other regions with different road, traffic, and weather conditions.
+
+5. **Real-Time Applicability**:
+   - The model uses static historical data for predictions and does not integrate real-time traffic or weather updates. Extending the model for dynamic predictions would require additional development.
+
+6. **Severity of Accidents**:
+   - The analysis focused on the likelihood of accidents without considering accident severity, which limits its utility for prioritizing responses.
+
+7. **Loss of Nuanced Information**:
+   - Simplifications in feature engineering, such as merging weather conditions and encoding categories, may obscure complex relationships and reduce the richness of insights.
+
+8. **Generalization Risk**:
+   - The reliance on synthetic data and historical patterns may cause the model to underperform in real-world scenarios where conditions differ significantly from the training data.
+
+### Future Directions:
+- Improve data collection to include non-accident cases and handle missing values more effectively.
+- Explore advanced modeling techniques, such as neural networks, to capture complex feature interactions.
+- Incorporate real-time data to enable dynamic predictions and improve practical applicability.
+- Expand the model to differentiate between accident severity levels for more actionable insights.
+- Develop an interactive map for city/town selection to enhance user experience.
 
 ---
 
