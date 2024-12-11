@@ -28,4 +28,5 @@ jobs:
       - name: Run Tests
         run: |
           pip install pytest
+          PYTHONPATH=./model pytest model/tests/
           pytest model/tests/
