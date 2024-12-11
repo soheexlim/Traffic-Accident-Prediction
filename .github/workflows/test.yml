@@ -26,7 +26,8 @@ jobs:
           pip install -r model/requirements.txt
           
       - name: Run Tests
+        working-directory: model
         run: |
           pip install pytest
-          PYTHONPATH=./model pytest model/tests/
+          PYTHONPATH=./ pytest tests/
           
