@@ -20,14 +20,16 @@ jobs:
         with:
           python-version: "3.9"
 
+      - name: Debug File Listing
+        run: ls -la
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt  # Path fixed to reference root directory
 
       - name: Copy Model File
-        run: |
-          cp model/calibrated_rf_model.joblib model/
+        run: cp model/calibrated_rf_model.joblib model/
 
       - name: Run Tests
         run: |
