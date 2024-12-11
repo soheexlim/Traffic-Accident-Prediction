@@ -1,140 +1,88 @@
 # Final Project: Predicting Traffic Accidents Based on Weather and Time Data in Greater Boston Area
 
 ## 1. Project Overview
-This project aims to predict the likelihood of traffic accidents at specific locations and times in the Greater Boston Metropolitan Area. By integrating historical crash data with weather and temporal information, we developed a predictive model to estimate the probability of accidents under different conditions.
+This project aims to predict the likelihood of traffic accidents in the Greater Boston Metropolitan Area by leveraging historical crash data enriched with weather and time-related features. Using machine learning models, the goal is to estimate the probability of accidents under various conditions, such as rain, nighttime, or rush hour. 
 
-The model's primary purpose is to enable real-time risk assessments for transportation agencies, navigation services, and city planners. It can serve as a foundation for targeted interventions, such as advisory systems for drivers or policy changes aimed at reducing accident risks.
+The insights generated from this project can be used by transportation agencies, city planners, and navigation services to provide actionable recommendations or warnings for accident-prone areas and times. By identifying key factors influencing accident risks, this project seeks to contribute to safer road systems and more informed decision-making.
 
 ---
 
 ## 2. Goals and Objectives
 
-### Primary Goals:
-- Build a robust predictive model that estimates the likelihood of accidents based on key features such as weather conditions, time of day, rush hour, and road surface conditions.
-  - Example Output: “There is a 70% chance of an accident at 5 PM on a rainy weekday in Boston.”
+Traffic accidents are influenced by a range of environmental and temporal factors, making predictive modeling a valuable tool for proactive safety measures. The **primary goal** of this project is to develop a machine learning model capable of predicting the likelihood of accidents based on key features such as weather, time of day, road conditions, and rush hour status. For example, the model might estimate that there is a 70% chance of an accident at a specific location on a rainy weekday during rush hour.
 
-### Secondary Goals:
-- Analyze the factors most strongly correlated with accident occurrence to provide actionable insights.
-  - Example Insight: “Nighttime rain during rush hour increases the accident likelihood by 50%.”
+In addition to prediction, the project aims to identify the most significant factors influencing accidents. The **secondary goal** involves analyzing the impact of variables like rain combined with nighttime driving or rush hour to understand how these combinations elevate risks. These insights will be critical for designing effective interventions.
 
 ---
 
 ## 3. Data Sources and Features
 
 ### Data Sources
-1. **Crash Data**:
-   - **Source**: [Massachusetts Crash Portal](https://massdot-impact-crashes-vhb.opendata.arcgis.com/)
-   - **Years Covered**: 2022 and 2023
-   - **Features**:
-     - **Location**: City/town name (`CITY_TOWN_NAME`), latitude, and longitude.
-     - **Crash Timing**: Date (`CRASH_DATE_TEXT`), time (`CRASH_TIME_2`).
-     - **Weather Conditions**: Reported weather at the time of the crash (`WEATH_COND_DESCR`).
-     - **Road Conditions**: Road surface condition (`ROAD_SURF_COND_DESCR`), ambient lighting, and junction type.
-     - **Crash Severity**: Indicators of crash outcomes (e.g., fatal or non-fatal).
+The dataset merges crash records from 2022 and 2023, sourced from [Massachusetts Crash Portal](https://massdot-impact-crashes-vhb.opendata.arcgis.com/). Each crash record includes details such as location, date, time, weather conditions, and road surface conditions. Temporal features like holidays and rush hour indicators were added using external libraries and engineering techniques. Weather data was simplified into categories (e.g., rain, clear, snow) to enhance interpretability.
 
-2. **Weather Data**:
-   - **Source**: Historical weather services (e.g., OpenWeatherMap API).
-   - **Features**:
-     - Temperature, precipitation (rain, snow), humidity, visibility, and wind speed.
-     - Simplified conditions: Rain, clear, fog, etc.
+### Key Features
+The dataset includes the following critical features:
+- **Crash Timing**: Date, time, and derived indicators like day of the week, nighttime, and rush hour.
+- **Weather Conditions**: Simplified categories such as clear, rain, snow, and fog.
+- **Road Conditions**: Surface conditions, junction types, and ambient lighting.
+- **Interaction Terms**: Combined features like weather during rush hour or weather at night.
 
-3. **Temporal Data**:
-   - **Derived Features**:
-     - `IS_RUSH_HOUR`: Rush hour indicator (6–10 AM, 3–7 PM).
-     - `IS_WEEKEND`: Weekend indicator (Saturday/Sunday).
-     - `IS_NIGHT`: Nighttime indicator (8 PM–6 AM).
-     - `IS_HOLIDAY`: U.S. public holidays, using the `holidays` library.
+By combining these features, the dataset provides a comprehensive foundation for analyzing accident risks under various conditions.
 
 ---
 
-## 4. Data Processing and Engineering
+## 4. Data Processing and Feature Engineering
 
-### Initial Cleaning
-1. **Column Filtering**:
-   - Removed over 100 unnecessary columns, including those with:
-     - Over 50% missing values.
-     - Unique identifiers irrelevant to modeling.
-     - Duplicative or overly granular information (e.g., street names).
-
-2. **Filtering for Greater Boston**:
-   - Filtered the dataset to include only crashes in cities and towns within the Greater Boston Metropolitan Area.
-   - Used a predefined list of cities and encoded them numerically using `LabelEncoder`.
+### Initial Data Cleaning
+The raw dataset originally contained over 120 columns, many of which were irrelevant or incomplete. Columns with over 50% missing values, redundant identifiers, or excessive granularity (e.g., street names) were removed, leaving a streamlined set of 16 key variables. Additionally, the dataset was filtered to include only crashes within the Greater Boston Metropolitan Area, using a predefined list of cities and towns.
 
 ### Feature Engineering
-1. **Datetime Features**:
-   - Combined `CRASH_DATE_TEXT` and `CRASH_TIME_2` into `CRASH_DATETIME` for consistency.
-   - Extracted:
-     - `DAY_OF_WEEK`: Numeric representation (Monday = 0, Sunday = 6).
-     - `IS_NIGHT`: 1 if crash occurred between 8 PM and 6 AM.
-     - `IS_RUSH_HOUR`: 1 for rush hours (6–10 AM and 3–7 PM).
-     - `IS_HOLIDAY`: 1 if crash occurred on a public holiday.
-
-2. **Weather Simplification**:
-   - Grouped detailed weather descriptions into broader categories:
-     - Clear, rain, snow, fog/smoke, and others.
-   - Encoded these categories numerically for modeling.
-
-3. **Speed Limit Ranges**:
-   - Grouped speed limits into `<30 mph`, `30–50 mph`, and `>50 mph`.
-   - Encoded these ranges numerically.
-
-4. **Interaction Terms**:
-   - Created features capturing combined effects:
-     - `WEATHER_RUSH_HOUR`: Interaction between weather and rush hour.
-     - `WEATHER_NIGHT`: Interaction between weather and nighttime.
-     - `WEATHER_WEEKEND`: Interaction between weather and weekends.
+To enhance the predictive power of the dataset, several new features were engineered:
+- **Datetime Features**: 
+  - `CRASH_DATETIME` was created by combining date and time fields. From this, additional features such as `DAY_OF_WEEK`, `IS_NIGHT`, `IS_RUSH_HOUR`, and `IS_HOLIDAY` were derived.
+- **Weather Simplification**:
+  - Weather descriptions were grouped into broader categories like "Rain," "Clear," and "Snow," and encoded numerically.
+- **Speed Limit Ranges**:
+  - Speed limits were categorized into `<30 mph`, `30–50 mph`, and `>50 mph` ranges to simplify analysis.
+- **Interaction Terms**:
+  - Features like `WEATHER_RUSH_HOUR` and `WEATHER_NIGHT` were created to capture the combined effects of weather and temporal conditions.
 
 ### Synthetic Data Generation
-- **Purpose**: Balance the dataset, as crashes were overrepresented.
-- **Method**:
-  - Generated synthetic non-accident data by simulating realistic conditions where accidents are less likely to occur.
-  - Assigned weighted probabilities for features like weather, time of day, and road conditions based on observed crash data.
+Since the dataset primarily consisted of crash records, it was imbalanced. To address this, synthetic non-accident data was generated by simulating realistic conditions where crashes were less likely. Weighted probabilities were assigned to features like weather, time of day, and road surface conditions, ensuring the synthetic data reflected real-world distributions.
 
 ---
 
 ## 5. Data Modeling
 
-### Train-Test Split
-- The merged dataset was shuffled and split into:
-  - **80% Training Data**: Used for model training and hyperparameter tuning.
-  - **20% Test Data**: Used for evaluating model performance.
+### Approach to Modeling
+The dataset was merged, shuffled, and split into training (80%) and testing (20%) subsets. Multiple machine learning models were employed to predict the likelihood of accidents, with a focus on optimizing accuracy and reliability.
 
 ### Models Used
-1. **Baseline: Logistic Regression**
-   - Simple model for binary classification.
+1. **Logistic Regression**:
+   - A simple baseline model for binary classification.
+2. **Random Forest**:
+   - Optimized using Bayesian hyperparameter tuning to enhance accuracy and reduce overfitting.
+3. **Gradient Boosting (XGBoost)**:
+   - Captures non-linear relationships between features and the target variable.
+4. **Neural Network**:
+   - A deep learning model with two hidden layers and dropout regularization to prevent overfitting.
+5. **Stacking Classifier**:
+   - Combines predictions from Random Forest, XGBoost, and Gradient Boosting using Logistic Regression as a meta-classifier.
 
-2. **Random Forest**
-   - Optimized with Bayesian hyperparameter tuning for:
-     - Number of trees (`n_estimators`), maximum depth, and minimum samples per split.
-
-3. **Gradient Boosting (XGBoost)**
-   - Captures non-linear relationships between features and target.
-
-4. **Neural Network**
-   - Trained using a sequential architecture:
-     - Input layer, two hidden layers (64 and 32 nodes), and a final sigmoid activation for binary classification.
-
-5. **Stacking Classifier**
-   - Combined predictions from Random Forest, XGBoost, and Gradient Boosting using Logistic Regression as a meta-classifier.
-
-### Calibration
-- Applied isotonic and sigmoid calibration to improve the reliability of predicted probabilities.
+### Calibration and Evaluation
+To improve the reliability of probability predictions, isotonic and sigmoid calibrations were applied to the models. Evaluation metrics included accuracy, F1 score, and confusion matrices to assess both precision and recall. 
 
 ---
 
-## 6. Preliminary Visualizations
+## 6. Preliminary Visualizations and Insights
+
 ### Key Insights
-1. **Accidents by Weekend vs. Weekday**:
-   - Weekdays had significantly more accidents, likely due to higher traffic volumes.
-
-2. **Accidents by Weather Condition**:
-   - Rain and snow increased accident frequency compared to clear weather.
-
-3. **Accidents During Day vs. Night**:
-   - Nighttime accidents, though fewer, were often more severe.
-
-4. **Heatmap of Correlations**:
-   - `IS_RUSH_HOUR` and `DAY_OF_WEEK` were moderately correlated with crash frequency.
+- **Accidents During Rush Hour**:
+  - Rush hour significantly increases the likelihood of accidents, especially during adverse weather conditions.
+- **Nighttime Accidents**:
+  - Though less frequent, nighttime accidents tend to be more severe, possibly due to reduced visibility and driver fatigue.
+- **Weather Conditions**:
+  - Rain and snow were found to increase accident risks compared to clear weather.
 
 ### Sample Visualizations
 #### Bar Chart: Accidents by Rush Hour
@@ -148,30 +96,38 @@ The model's primary purpose is to enable real-time risk assessments for transpor
 
 ---
 
-## 7. Evaluation Metrics
-- **Accuracy**: Percentage of correct predictions.
-- **F1 Score**: Balance between precision and recall, especially useful for imbalanced datasets.
-- **Confusion Matrix**: Evaluated false positives/negatives for accident prediction.
+## 7. Evaluation Metrics and Results
+
+### Metrics Used
+1. **Accuracy**: Proportion of correct predictions.
+2. **F1 Score**: Harmonic mean of precision and recall, particularly valuable for imbalanced datasets.
+3. **Confusion Matrix**: Breakdown of true/false positives and negatives.
+
+### Baseline Accuracy
+A naïve model predicting the majority class (no accidents) achieved a baseline accuracy of approximately 70%. Models significantly outperformed this baseline.
 
 ---
 
-## 8. Future Work
-1. **Refinement**:
-   - Incorporate additional features such as road type, traffic control devices, or driver demographics (if available).
-   - Improve synthetic data generation with more realistic weights.
+## 8. Future Work and Applications
 
-2. **Analysis of Feature Importance**:
-   - Quantify the contribution of weather, time, and interaction terms to accident likelihood.
+### Next Steps
+1. **Feature Expansion**:
+   - Incorporate additional variables such as traffic volume, road type, or seasonal trends.
+2. **Deployment**:
+   - Build an interactive dashboard for real-time accident prediction and visualization.
+3. **Deeper Analysis**:
+   - Investigate feature importance to identify the most critical predictors of accidents.
 
-3. **Deployment**:
-   - Create an interactive dashboard for real-time accident prediction.
-   - Collaborate with transportation agencies for practical implementation.
+### Practical Applications
+This model can be used by transportation agencies for proactive interventions, such as dynamic speed limits or targeted public safety campaigns. Navigation services could integrate the predictions to alert drivers about high-risk areas or times.
 
 ---
 
 ## Midterm Report and Presentation
 - **YouTube Link**: [https://youtu.be/xDtrSEpDA7s](https://youtu.be/xDtrSEpDA7s)
-- 
+
+---
+
 
 ## 4. Preliminary results
 - Finally, we evaluated the calibrated model’s performance by checking its accuracy and F1 score, integrated its calibrated probabilities with those from other models, and saved high-probability predictions to a submission file for further analysis.
