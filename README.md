@@ -100,6 +100,13 @@ Key dropdown options include:
 - **IS_WEEKEND, IS_NIGHT, IS_HOLIDAY, IS_RUSH_HOUR**:
   - Yes or No
 
+### Example Web Application Screenshot
+#### Home Page with Input Form
+![Flask Web Application Input Form](https://github.com/user-attachments/assets/screenshot-1.png)
+
+#### Prediction Result
+![Prediction Result](https://github.com/user-attachments/assets/screenshot-2.png)
+
 The application outputs either "Likely to Crash" or "Not Likely to Crash" based on the user inputs.
 
 ---
@@ -115,12 +122,14 @@ The application outputs either "Likely to Crash" or "Not Likely to Crash" based 
   - Higher speed limits correlate with a greater risk of accidents.
 
 ### Sample Visualizations
-1. **Accidents During Rush Hour**:
-   - Bar charts show increased accident counts during rush hour.
-2. **Weather and Rush Hour Interaction**:
-   - Highlighted elevated risks when adverse weather coincides with rush hour.
-3. **Correlation Heatmap**:
-   - Revealed strong relationships between weather, rush hour, and accident occurrence.
+#### Bar Chart: Accidents During Rush Hour
+![Accidents by Rush Hour](https://github.com/user-attachments/assets/accidents-rush-hour.png)
+
+#### Correlation Heatmap
+![Correlation Heatmap](https://github.com/user-attachments/assets/correlation-heatmap.png)
+
+#### Interaction Term: Weather and Rush Hour
+![Weather and Rush Hour](https://github.com/user-attachments/assets/weather-rush-hour.png)
 
 ---
 
