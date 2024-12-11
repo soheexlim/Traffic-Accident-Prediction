@@ -23,11 +23,13 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r model/requirements.txt
+          pip install -r requirements.txt
+
+      - name: Copy Model File
+        run: cp calibrated_rf_model.joblib model/
 
       - name: Run Tests
         run: |
           pip install pytest
           PYTHONPATH=./model pytest model/tests/
-          pytest model/tests/
-        working-directory: .
+
