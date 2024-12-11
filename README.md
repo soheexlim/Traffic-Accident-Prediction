@@ -128,9 +128,3 @@ This model can be used by transportation agencies for proactive interventions, s
 
 ---
 
-
-## 4. Preliminary results
-- Finally, we evaluated the calibrated model’s performance by checking its accuracy and F1 score, integrated its calibrated probabilities with those from other models, and saved high-probability predictions to a submission file for further analysis.
-- We averaged the probability predictions from the calibrated models to produce a final probability estimate for each record. A threshold of 0.5 was applied to classify each record as either an accident (1) or non-accident (0), adjusting the sensitivity and specificity of the model as needed.
-- Our models achieved accuracy of accuracy of 88.73%, indicating strong results given that this was a balanced dataset. Our F1 score  is 0.8859, which shows a good balance between precision and recall. This performance suggests that our models are well-calibrated and effective for predicting accident occurrences under the simulated conditions
-

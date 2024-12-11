@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Forest Predictor</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Center vertically */
+            margin-bottom: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Prediction Styles */
+        .prediction-container {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .not-likely {
+            color: #27ae60; /* Green */
+        }
+
+        .likely {
+            color: #e74c3c; /* Red */
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Forest Predictor</h1>
+    <form method="POST">
+        <label>CRASH HOUR (0 - 12):</label>
+        <input type="number" name="CRASH_HOUR" required><br>
+
+        <label>CITY/TOWN NAME</label>
+        <select name="CITY_TOWN_NAME_ENCODED" required>
+            <option value="0">ABINGTON</option>
+            <option value="1">ANDOVER</option>
+            <option value="2">ARLINGTON</option>
+            <option value="3">BEDFORD</option>
+            <option value="4">BELMONT</option>
+            <option value="5">BEVERLY</option>
+            <option value="6">BOSTON</option>
+            <option value="7">BRAINTREE</option>
+            <option value="8">BROOKLINE</option>
+            <option value="9">BURLINGTON</option>
+            <option value="10">CAMBRIDGE</option>
+            <option value="11">CANTON</option>
+            <option value="12">CHELSEA</option>
+            <option value="13">DANVERS</option>
+            <option value="14">DEDHAM</option>
+            <option value="15">EVERETT</option>
+            <option value="16">FOXBOROUGH</option>
+            <option value="17">FRAMINGHAM</option>
+            <option value="18">FRANKLIN</option>
+            <option value="19">GLOUCESTER</option>
+            <option value="20">HAVERHILL</option>
+            <option value="21">HINGHAM</option>
+            <option value="22">HULL</option>
+            <option value="23">LAWRENCE</option>
+            <option value="24">LEXINGTON</option>
+            <option value="25">LINCOLN</option>
+            <option value="26">LYNN</option>
+            <option value="27">MALDEN</option>
+            <option value="28">MARBLEHEAD</option>
+            <option value="29">MARSHFIELD</option>
+            <option value="30">MEDFIELD</option>
+            <option value="31">MEDFORD</option>
+            <option value="32">MELROSE</option>
+            <option value="33">MILTON</option>
+            <option value="34">NATICK</option>
+            <option value="35">NEEDHAM</option>
+            <option value="36">NEWTON</option>
+            <option value="37">NORTH READING</option>
+            <option value="38">NORWELL</option>
+            <option value="39">NORWOOD</option>
+            <option value="40">PEABODY</option>
+            <option value="41">QUINCY</option>
+            <option value="42">RANDOLPH</option>
+            <option value="43">READING</option>
+            <option value="44">REVERE</option>
+            <option value="45">ROCKLAND</option>
+            <option value="46">SALEM</option>
+            <option value="47">SAUGUS</option>
+            <option value="48">SCITUATE</option>
+            <option value="49">SHARON</option>
+            <option value="50">SOMERVILLE</option>
+            <option value="51">STONEHAM</option>
+            <option value="52">SWAMPSCOTT</option>
+            <option value="53">TOPSFIELD</option>
+            <option value="54">WAKEFIELD</option>
+            <option value="55">WALPOLE</option>
+            <option value="56">WALTHAM</option>
+            <option value="57">WATERTOWN</option>
+            <option value="58">WAYLAND</option>
+            <option value="59">WELLESLEY</option>
+            <option value="60">WESTON</option>
+            <option value="61">WESTWOOD</option>
+            <option value="62">WEYMOUTH</option>
+            <option value="63">WHITMAN</option>
+            <option value="64">WILMINGTON</option>
+            <option value="65">WINCHESTER</option>
+            <option value="66">WINTHROP</option>
+            <option value="67">WOBURN</option>
+        </select><br>
+
+        <label>TIME OF DAY</label>
+        <select name="TIME_OF_DAY_ENCODED" required>
+            <option value="0">MORNING</option>
+            <option value="1">AFTERNOON</option>
+            <option value="2">EVENING</option>
+            <option value="3">NIGHT</option>
+        </select><br>
+
+        <label>SPEED LIMIT</label>
+        <select name="SPEED_LIMIT_ENCODED" required>
+            <option value="0"> LESS THAN 30</option>
+            <option value="1">BETWEEN 30 AND 50</option>
+            <option value="2">GREATER THAN 50</option>
+            <option value="3">UNKNOWN</option>
+        </select><br>
+
+        <label>WEATHER:</label>
+        <select name="WEATHER_SIMPLIFIED_ENCODED" required>
+            <option value="0">Blowing Sand/Snow</option>
+            <option value="1">Clear</option>
+            <option value="2">Fog/Smoke</option>
+            <option value="3">Hail</option>
+            <option value="4">Other</option>
+            <option value="5">Rain</option>
+            <option value="6">Snow</option>
+            <option value="7">Unknown</option>
+            <option value="8">Wind</option>
+        </select><br>
+
+        <label>ROAD SURF COND ENCODED:</label>
+        <select name="ROAD_SURF_COND_ENCODED" required>
+            <option value="0">Wet</option>
+            <option value="1">Dry</option>
+            <option value="2">Ice</option>
+            <option value="3">Snow</option>
+            <option value="4">Slush</option>
+            <option value="5">Other</option>
+            <option value="6">Sand, mud, dirt, oil, gravel</option>
+            <option value="7">Water (standing, moving)</option>
+        </select><br>
+
+        <label>DAY OF WEEK:</label>
+        <select name="DAY_OF_WEEK" required>
+            <option value="0">Monday</option>
+            <option value="1">Tuesday</option>
+            <option value="2">Wednesday</option>
+            <option value="3">Thursday</option>
+            <option value="4">Friday</option>
+            <option value="5">Saturday</option>
+            <option value="6">Sunday</option>
+        </select><br>
+
+        <label>IS WEEKEND:</label>
+        <select id="IS_WEEKEND" name="IS_WEEKEND" required>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+
+        <label>IS NIGHT:</label>
+        <select id="IS_NIGHT" name="IS_NIGHT" required>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+
+        <label>IS HOLIDAY:</label>
+        <select id="IS_HOLIDAY" name="IS_HOLIDAY" required>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+
+        <label>IS RUSH HOUR:</label>
+        <select id="IS_RUSH_HOUR" name="IS_RUSH_HOUR" required>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction is not none %}
+    <div class="prediction-container">
+        {% if prediction == 0 %}
+            <span class="not-likely">Not Likely to Crash</span>
+        {% elif prediction == 1 %}
+            <span class="likely">Likely to Crash</span>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
