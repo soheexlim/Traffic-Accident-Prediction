@@ -21,9 +21,10 @@ jobs:
           python-version: "3.9"
 
       - name: Install Dependencies
+        working-directory: model
         run: |
           python -m pip install --upgrade pip
-          pip install -r ./requirements.txt
+          pip install -r requirements.txt
 
       - name: Copy Model File
         run: cp calibrated_rf_model.joblib model/
