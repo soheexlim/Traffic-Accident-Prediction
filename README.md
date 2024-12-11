@@ -1,7 +1,9 @@
 # Final Project: Predicting Traffic Accidents Based on Weather and Time Data in Greater Boston Area
 
+* The model folder includes a pre-trained Random Forest model saved as a .joblib file, which is automatically used when running the application. To set up and run the application, simply execute the provided Makefile without the need to create a new model. If you wish to create your own model, download the notebook and Archive.zip file. The notebook contains the code used to develop the Random Forest model, while the Archive.zip includes the necessary datasets. Extract the zip file, update the notebook's file paths to match your local setup, and execute the notebook to generate a new model for use in the application.
+
 ## 1. Project Overview
-This project aims to predict the likelihood of traffic accidents in the Greater Boston Metropolitan Area by leveraging historical crash data enriched with weather and time-related features. Using machine learning models, the goal is to estimate the probability of accidents under various conditions, such as rain, nighttime, or rush hour. 
+This project aims to predict the likelihood of traffic accidents in the Greater Boston Metropolitan Area by leveraging historical crash data enriched with weather and time-related features. Using machine learning models, the goal is to estimate the likelihood of accidents occuring under various conditions, such as rain, nighttime, or rush hour. 
 
 The insights generated from this project can be used by transportation agencies, city planners, and navigation services to provide actionable recommendations or warnings for accident-prone areas and times. By identifying key factors influencing accident risks, this project seeks to contribute to safer road systems and more informed decision-making.
 
