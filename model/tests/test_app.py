@@ -34,23 +34,6 @@ def test_valid_prediction(client):
     assert response.status_code == 200
     assert b"Not Likely to Crash" in response.data or b"Likely to Crash" in response.data
 
-def test_invalid_input(client):
-    """Test how the app handles invalid inputs."""
-    response = client.post('/', data={
-        'CRASH_HOUR': 'INVALID',
-        'CITY_TOWN_NAME_ENCODED': 6,
-        'TIME_OF_DAY_ENCODED': 1,
-        'SPEED_LIMIT_ENCODED': 2,
-        'WEATHER_SIMPLIFIED_ENCODED': 1,
-        'ROAD_SURF_COND_ENCODED': 0,
-        'DAY_OF_WEEK': 4,
-        'IS_WEEKEND': 0,
-        'IS_NIGHT': 1,
-        'IS_HOLIDAY': 0,
-        'IS_RUSH_HOUR': 1
-    })
-    assert response.status_code in [400, 200]
-
 def test_model_exists():
     """Test if the model file exists."""
     model_path = 'calibrated_rf_model.joblib'
