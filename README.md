@@ -1,136 +1,163 @@
-# Final Project: Predicting Traffic Accidents Based on Weather and Time Data in Greater Boston Area
+# Final Project: Predicting Traffic Accidents Based on Weather and Time Data in the Greater Boston Area
 
 ## 1. Project Overview
-This project aims to predict the likelihood of traffic accidents in the Greater Boston Metropolitan Area by leveraging historical crash data enriched with weather and time-related features. Using machine learning models, the goal is to estimate the probability of accidents under various conditions, such as rain, nighttime, or rush hour. 
 
-The insights generated from this project can be used by transportation agencies, city planners, and navigation services to provide actionable recommendations or warnings for accident-prone areas and times. By identifying key factors influencing accident risks, this project seeks to contribute to safer road systems and more informed decision-making.
+This project leverages machine learning models to predict the likelihood of traffic accidents in the Greater Boston Metropolitan Area. By using historical crash data and integrating weather and time-related features, the project provides actionable insights into traffic accident risks. 
+
+The outcomes of this project are designed to assist city planners, transportation agencies, and navigation services in implementing proactive safety measures. Additionally, the interactive Flask web application allows users to input specific conditions (e.g., time, weather, location) and receive predictions about accident likelihood.
 
 ---
 
 ## 2. Goals and Objectives
 
-Traffic accidents are influenced by a range of environmental and temporal factors, making predictive modeling a valuable tool for proactive safety measures. The **primary goal** of this project is to develop a machine learning model capable of predicting the likelihood of accidents based on key features such as weather, time of day, road conditions, and rush hour status. For example, the model might estimate that there is a 70% chance of an accident at a specific location on a rainy weekday during rush hour.
+### Primary Goal
+Develop a robust machine learning model to predict the likelihood of traffic accidents based on key variables, such as weather conditions, road surface states, and temporal factors (e.g., day of the week, rush hour).
 
-In addition to prediction, the project aims to identify the most significant factors influencing accidents. The **secondary goal** involves analyzing the impact of variables like rain combined with nighttime driving or rush hour to understand how these combinations elevate risks. These insights will be critical for designing effective interventions.
+### Secondary Goal
+Analyze the influence of individual and combined factors (e.g., weather during rush hour or nighttime) to identify key contributors to accident risks. These insights will be critical for designing data-driven interventions and safety campaigns.
 
 ---
 
 ## 3. Data Sources and Features
 
 ### Data Sources
-The dataset merges crash records from 2022 and 2023, sourced from [Massachusetts Crash Portal](https://massdot-impact-crashes-vhb.opendata.arcgis.com/). Each crash record includes details such as location, date, time, weather conditions, and road surface conditions. Temporal features like holidays and rush hour indicators were added using external libraries and engineering techniques. Weather data was simplified into categories (e.g., rain, clear, snow) to enhance interpretability.
+The dataset combines crash data from 2022 and 2023, sourced from the [Massachusetts Crash Portal](https://massdot-impact-crashes-vhb.opendata.arcgis.com/). The dataset includes crash details such as location, time, weather conditions, and road surface conditions. Additional features were engineered to enrich the data, including holiday indicators and rush hour classifications.
 
 ### Key Features
-The dataset includes the following critical features:
-- **Crash Timing**: Date, time, and derived indicators like day of the week, nighttime, and rush hour.
-- **Weather Conditions**: Simplified categories such as clear, rain, snow, and fog.
-- **Road Conditions**: Surface conditions, junction types, and ambient lighting.
-- **Interaction Terms**: Combined features like weather during rush hour or weather at night.
+The dataset contains the following critical features:
+- **Crash Timing**: 
+  - `CRASH_HOUR` (hour of the crash)
+  - `DAY_OF_WEEK` (day of the week)
+  - `IS_NIGHT` (nighttime indicator)
+  - `IS_RUSH_HOUR` (rush hour indicator)
+  - `IS_HOLIDAY` (holiday indicator)
+- **Weather Conditions**:
+  - `WEATHER_SIMPLIFIED_ENCODED` (e.g., Clear, Rain, Snow)
+- **Road Conditions**:
+  - `ROAD_SURF_COND_ENCODED` (e.g., Wet, Dry, Ice)
+  - `SPEED_LIMIT_ENCODED` (categorized speed limits: <30 mph, 30–50 mph, >50 mph)
+- **Interaction Terms**:
+  - `WEATHER_RUSH_HOUR`, `WEATHER_NIGHT`, and `WEATHER_WEEKEND` capture combined effects of weather and temporal factors.
 
-By combining these features, the dataset provides a comprehensive foundation for analyzing accident risks under various conditions.
+These features were selected based on their relevance to accident risk prediction and ease of interpretability.
 
 ---
 
 ## 4. Data Processing and Feature Engineering
 
-### Initial Data Cleaning
-The raw dataset originally contained over 120 columns, many of which were irrelevant or incomplete. Columns with over 50% missing values, redundant identifiers, or excessive granularity (e.g., street names) were removed, leaving a streamlined set of 16 key variables. Additionally, the dataset was filtered to include only crashes within the Greater Boston Metropolitan Area, using a predefined list of cities and towns.
+### Data Cleaning
+- Removed columns with over 50% missing values or irrelevant information (e.g., street names).
+- Filtered the dataset to include only crashes within the Greater Boston area, based on a predefined list of cities and towns.
+- Addressed missing values by imputing or dropping rows/columns, depending on feature importance.
 
 ### Feature Engineering
-To enhance the predictive power of the dataset, several new features were engineered:
-- **Datetime Features**: 
-  - `CRASH_DATETIME` was created by combining date and time fields. From this, additional features such as `DAY_OF_WEEK`, `IS_NIGHT`, `IS_RUSH_HOUR`, and `IS_HOLIDAY` were derived.
-- **Weather Simplification**:
-  - Weather descriptions were grouped into broader categories like "Rain," "Clear," and "Snow," and encoded numerically.
-- **Speed Limit Ranges**:
-  - Speed limits were categorized into `<30 mph`, `30–50 mph`, and `>50 mph` ranges to simplify analysis.
-- **Interaction Terms**:
-  - Features like `WEATHER_RUSH_HOUR` and `WEATHER_NIGHT` were created to capture the combined effects of weather and temporal conditions.
+- **Datetime Features**: Derived features such as `DAY_OF_WEEK`, `IS_NIGHT`, `IS_RUSH_HOUR`, and `IS_HOLIDAY` using the `CRASH_DATETIME` column.
+- **Simplified Weather Descriptions**: Grouped detailed weather conditions into categories like "Clear," "Rain," and "Snow."
+- **Categorized Speed Limits**: Grouped speed limits into ranges (<30 mph, 30–50 mph, >50 mph) and encoded them numerically.
+- **Interaction Terms**: Created features to analyze combined effects, such as `WEATHER_RUSH_HOUR` and `WEATHER_NIGHT`.
 
 ### Synthetic Data Generation
-Since the dataset primarily consisted of crash records, it was imbalanced. To address this, synthetic non-accident data was generated by simulating realistic conditions where crashes were less likely. Weighted probabilities were assigned to features like weather, time of day, and road surface conditions, ensuring the synthetic data reflected real-world distributions.
+To address data imbalance, synthetic non-accident data was generated. Weighted probabilities were assigned to features such as weather and time of day, ensuring the synthetic data mirrored real-world conditions. 
 
 ---
 
-## 5. Data Modeling
+## 5. Modeling
 
-### Approach to Modeling
-The dataset was merged, shuffled, and split into training (80%) and testing (20%) subsets. Multiple machine learning models were employed to predict the likelihood of accidents, with a focus on optimizing accuracy and reliability.
-
-### Models Used
-1. **Logistic Regression**:
-   - A simple baseline model for binary classification.
-2. **Random Forest**:
-   - Optimized using Bayesian hyperparameter tuning to enhance accuracy and reduce overfitting.
-3. **Gradient Boosting (XGBoost)**:
-   - Captures non-linear relationships between features and the target variable.
-4. **Neural Network**:
-   - A deep learning model with two hidden layers and dropout regularization to prevent overfitting.
-5. **Stacking Classifier**:
-   - Combines predictions from Random Forest, XGBoost, and Gradient Boosting using Logistic Regression as a meta-classifier.
+### Machine Learning Models
+- **Random Forest**: Optimized using Bayesian hyperparameter tuning for accuracy and generalizability.
+- **Gradient Boosting (XGBoost)**: Captures complex, non-linear relationships between features and the target variable.
+- **Neural Network**: A two-layer model with dropout regularization to prevent overfitting.
+- **Stacking Classifier**: Combines predictions from Random Forest, Gradient Boosting, and XGBoost using Logistic Regression as the meta-classifier.
 
 ### Calibration and Evaluation
-To improve the reliability of probability predictions, isotonic and sigmoid calibrations were applied to the models. Evaluation metrics included accuracy, F1 score, and confusion matrices to assess both precision and recall. 
+- Models were calibrated using isotonic and sigmoid methods to ensure reliable probability predictions.
+- Evaluation metrics included:
+  - **Accuracy**: Overall correctness of predictions.
+  - **F1 Score**: Balance between precision and recall.
+  - **Confusion Matrix**: Provides detailed breakdowns of true/false positives and negatives.
 
 ---
 
-## 6. Preliminary Visualizations and Insights
+## 6. Flask Web Application
+
+An interactive web application was developed using Flask to provide users with real-time predictions. Users can input specific conditions (e.g., CRASH_HOUR, CITY_TOWN_NAME_ENCODED, WEATHER_SIMPLIFIED_ENCODED) via a form with dropdown menus. 
+
+### Dropdown Options
+Key dropdown options include:
+- **CRASH_HOUR**: 0–12
+- **CITY_TOWN_NAME**:
+  - Examples: ABINGTON, BOSTON, CAMBRIDGE, NEWTON
+- **TIME_OF_DAY**:
+  - Morning, Afternoon, Evening, Night
+- **SPEED_LIMIT**:
+  - Less than 30, Between 30 and 50, Greater than 50
+- **WEATHER**:
+  - Blowing Sand/Snow, Clear, Fog/Smoke, Rain, Snow
+- **ROAD_SURF_COND_ENCODED**:
+  - Wet, Dry, Ice, Snow, Slush
+- **DAY_OF_WEEK**:
+  - Monday, Tuesday, Wednesday, etc.
+- **IS_WEEKEND, IS_NIGHT, IS_HOLIDAY, IS_RUSH_HOUR**:
+  - Yes or No
+
+The application outputs either "Likely to Crash" or "Not Likely to Crash" based on the user inputs.
+
+---
+
+## 7. Results and Visualizations
 
 ### Key Insights
-- **Accidents During Rush Hour**:
-  - Rush hour significantly increases the likelihood of accidents, especially during adverse weather conditions.
+- **Rush Hour and Weather**:
+  - Accidents are more likely during rush hour, particularly in rainy or snowy conditions.
 - **Nighttime Accidents**:
-  - Though less frequent, nighttime accidents tend to be more severe, possibly due to reduced visibility and driver fatigue.
-- **Weather Conditions**:
-  - Rain and snow were found to increase accident risks compared to clear weather.
+  - Nighttime accidents, though less frequent, tend to be more severe.
+- **Speed Limit Impact**:
+  - Higher speed limits correlate with a greater risk of accidents.
 
 ### Sample Visualizations
-#### Bar Chart: Accidents by Rush Hour
-![Accidents by Rush Hour](https://github.com/user-attachments/assets/70507ae4-2b5e-4b24-b651-a55ce0dddab1)
-
-#### Correlation Heatmap
-![Correlation Heatmap](https://github.com/user-attachments/assets/6b148ea5-7b51-4089-b353-76524613e535)
-
-#### Interaction Term: Weather and Rush Hour
-![Weather and Rush Hour](https://github.com/user-attachments/assets/3f98db15-184b-4fb2-99ae-9e24d2397093)
-
----
-
-## 7. Evaluation Metrics and Results
-
-### Metrics Used
-1. **Accuracy**: Proportion of correct predictions.
-2. **F1 Score**: Harmonic mean of precision and recall, particularly valuable for imbalanced datasets.
-3. **Confusion Matrix**: Breakdown of true/false positives and negatives.
-
-### Baseline Accuracy
-A naïve model predicting the majority class (no accidents) achieved a baseline accuracy of approximately 70%. Models significantly outperformed this baseline.
+1. **Accidents During Rush Hour**:
+   - Bar charts show increased accident counts during rush hour.
+2. **Weather and Rush Hour Interaction**:
+   - Highlighted elevated risks when adverse weather coincides with rush hour.
+3. **Correlation Heatmap**:
+   - Revealed strong relationships between weather, rush hour, and accident occurrence.
 
 ---
 
 ## 8. Future Work and Applications
 
 ### Next Steps
-1. **Feature Expansion**:
-   - Incorporate additional variables such as traffic volume, road type, or seasonal trends.
-2. **Deployment**:
-   - Build an interactive dashboard for real-time accident prediction and visualization.
-3. **Deeper Analysis**:
-   - Investigate feature importance to identify the most critical predictors of accidents.
+1. **Expand Features**:
+   - Integrate additional datasets (e.g., traffic volume, seasonal trends).
+2. **Improve Deployment**:
+   - Deploy the web application to a cloud service for broader access.
+3. **Optimize Models**:
+   - Experiment with advanced ensemble techniques and larger datasets.
 
-### Practical Applications
-This model can be used by transportation agencies for proactive interventions, such as dynamic speed limits or targeted public safety campaigns. Navigation services could integrate the predictions to alert drivers about high-risk areas or times.
+### Applications
+This project has practical applications for:
+- Transportation agencies to deploy real-time alerts and interventions.
+- Navigation services (e.g., Google Maps) to warn users about high-risk areas and times.
+- Policy recommendations for infrastructure and public safety improvements.
 
 ---
 
-## Midterm Report and Presentation
+## 9. Midterm Report and Presentation
 - **YouTube Link**: [https://youtu.be/xDtrSEpDA7s](https://youtu.be/xDtrSEpDA7s)
 
 ---
 
+## 10. Technical References
 
-## 4. Preliminary results
-- Finally, we evaluated the calibrated model’s performance by checking its accuracy and F1 score, integrated its calibrated probabilities with those from other models, and saved high-probability predictions to a submission file for further analysis.
-- We averaged the probability predictions from the calibrated models to produce a final probability estimate for each record. A threshold of 0.5 was applied to classify each record as either an accident (1) or non-accident (0), adjusting the sensitivity and specificity of the model as needed.
-- Our models achieved accuracy of accuracy of 88.73%, indicating strong results given that this was a balanced dataset. Our F1 score  is 0.8859, which shows a good balance between precision and recall. This performance suggests that our models are well-calibrated and effective for predicting accident occurrences under the simulated conditions
+### Key Python Libraries
+- **Flask**: For building the web application.
+- **scikit-learn**: For machine learning models and calibration.
+- **XGBoost**: For gradient boosting.
+- **pandas, numpy**: For data manipulation and analysis.
+- **seaborn, matplotlib**: For visualizations.
 
+### Links
+- [Massachusetts Crash Portal](https://massdot-impact-crashes-vhb.opendata.arcgis.com/)
+- [GitHub Repository](https://github.com/soheexlim/final-project)
+
+---
