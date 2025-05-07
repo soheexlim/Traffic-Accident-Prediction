@@ -1,4 +1,4 @@
-# Final Project: Predicting Traffic Accidents Based on Weather and Time Data in Greater Boston Area
+# Predicting Traffic Accidents Based on Weather and Time Data in Greater Boston Area
 
 * The model folder includes a pre-trained Random Forest model saved as a .joblib file, which is automatically used when running the application. To set up and run the application, simply execute the provided Makefile without the need to create a new model. If you wish to create your own model, download the notebook and Archive.zip file. The notebook contains the code used to develop the Random Forest model, while the Archive.zip includes the necessary datasets. Extract the zip file, update the notebook's file paths to match your local setup, and execute the notebook to generate a new model for use in the application.
 
